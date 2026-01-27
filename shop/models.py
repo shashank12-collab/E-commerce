@@ -6,6 +6,8 @@ class Product(models.Model):
     product_name = models.CharField(max_length=20)
     desc = models.CharField(max_length=200)
     pub_date = models.DateField()
+    category = models.CharField(max_length=50)
+    sub_category = models.CharField(max_length=50)
     
     
     def __str__(self):
