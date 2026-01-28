@@ -264,6 +264,16 @@
     <span class="carousel-control-next-icon"></span>
   </button>
 
+  {% for pro in products %}
+  <p>{{pro.product_name}}</p>
+  <p>{{pro.desc}}</p>
+  <p>{{pro.category}}</p>
+  <p>{{pro.sub_category}}</p>
+  <p>{{pro.price}}</p>
+  <p>{{pro.image}}</p>
+
+  {% endfor %}
+
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
