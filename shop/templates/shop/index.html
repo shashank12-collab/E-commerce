@@ -33,9 +33,14 @@ background-color: blue;
 }
 
 .carousel-control-prev-icon,
-.carousel-control-next-icon 
+.carousel-control-next-icon
 {
 filter: invert(1);
+}
+
+.cart {
+  position: relative;
+  z-index: 9999;
 }
 
 
@@ -75,7 +80,7 @@ padding-right: 0;
       {% endfor %}
     </div>
 
-    <div class="container carousel-inner no-padding">
+    <div class="carousel-inner no-padding">
 
       <div class="carousel-item active">
         <div class="col-xs-3 col col-sm-3 col-md-3">
@@ -84,7 +89,7 @@ padding-right: 0;
             <div class="card-body">
               <h5 class="card-title">{{product.0.product_name}}</h5>
               <p class="card-text">{{product.0.desc}}</p>
-              <a href="#" class="btn btn-primary">Add To Cart</a>
+              <button id="pr{{ product.0.id }}" class="btn btn-primary cart">Add To Cart</button>
             </div>
           </div>
         </div>
@@ -97,7 +102,7 @@ padding-right: 0;
             <div class="card-body">
               <h5 class="card-title">{{i.product_name|truncatewords:12}}</h5>
               <p class="card-text">{{i.desc|truncatewords:12}}</p>
-              <a href="#" class="btn btn-primary">Add To Cart</a>
+              <button id="pr{{i.id}}" class="btn btn-primary cart">Add To Cart</button>
             </div>
           </div>
         </div>
@@ -108,17 +113,50 @@ padding-right: 0;
         {% endfor %}
       </div>
     </div>
- 
 
-  <!--  correction: controls Bootstrap 5 -->
-  <button class="carousel-control-prev" type="button" data-bs-target="#demo{{forloop.counter}}" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon"></span>
-  </button>
 
-  <button class="carousel-control-next" type="button" data-bs-target="#demo{{forloop.counter}}" data-bs-slide="next">
-    <span class="carousel-control-next-icon"></span>
-  </button>
-</div>
+    <!--  correction: controls Bootstrap 5 -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#demo{{forloop.counter}}" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon"></span>
+    </button>
+
+    <button class="carousel-control-next" type="button" data-bs-target="#demo{{forloop.counter}}" data-bs-slide="next">
+      <span class="carousel-control-next-icon"></span>
+    </button>
+  </div>
   {% endfor %}
 </div>
+{% endblock %}
+
+
+{% block js %}
+
+<script>
+  if (localStorage.getItem('cart') == null) {
+    var cart = {};
+  }
+  else {
+    cart = JSON.parse(localStorage.getItem('cart'));
+  }
+
+  $(document).on("click", ".cart", function () {
+    alert("Button Clicked!");
+    var idstr = this.id.toString();
+
+    if (cart[idstr] != undefined) {
+      cart[idstr] = cart[idstr] + 1;
+    }
+    else {
+      cart[idstr] = 1;
+    }
+
+    localStorage.setItem('cart', JSON.stringify(cart));
+
+    console.log(cart);
+    localStorage.setItem('cart' , JSON.stringify(cart))
+  });
+</script>
+ 
+
+
 {% endblock %}
