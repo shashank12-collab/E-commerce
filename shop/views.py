@@ -21,16 +21,16 @@ def about(request):
     return render(request ,'shop/about.html')
 
 def contact(request):
-    return HttpResponse("we are contact")
+    return render(request ,"shop/contact.html")
 
 def tracker(request):
-    return HttpResponse("we are tracker")
+    return render(request , 'shop/tracker.html')
 
 def search(request):
-    return HttpResponse("we are search")
+    return render(request , 'shop/search.html')
 
 def productview(request):
-    return HttpResponse("we are product")
+    return render(request ,'shop/productview.html')
 
 def checkout(request):
-    return HttpResponse("we are chaeckout")
+    return render(request , 'shop/checkout.html')

@@ -39,15 +39,15 @@ filter: invert(1);
 }
 
 .cart {
-  position: relative;
-  z-index: 9999;
+position: relative;
+z-index: 9999;
 }
 
 
 .carousel-control-prev,
 .carousel-control-next{
 top: auto;
-bottom:auto
+bottom:auto;
 }
 
 body .no-padding {
@@ -70,59 +70,54 @@ padding-right: 0;
 <div class="container">
   {% for product , range , nslides in allprod %}
   <h1>{{product.0.category}}</h1>
-  <div id="demo{{forloop.counter}}" class="carousel slide my-3" data-bs-ride="carousel">
-    <div class="carousel-indicators">
-      <button type="button" data-bs-target="#demo{{forloop.parentloop.counter}}" data-bs-slide-to="0"
-        class="active"></button>
+  <div class="row">
+    <div id="demo{{forloop.counter}}" class="carousel slide my-3" data-bs-ride="carousel">
+      <div class="carousel-indicators">
+        <button type="button" data-bs-target="#demo{{forloop.parentloop.counter}}" data-bs-slide-to="0"
+          class="active"></button>
 
-      {% for i in range %}
-      <button type="button" data-bs-target="#demo{{forloop.parentloop.counter}}" data-bs-slide-to="{{i}}"></button>
-      {% endfor %}
-    </div>
-
-    <div class="carousel-inner no-padding">
-
-      <div class="carousel-item active">
-        <div class="col-xs-3 col col-sm-3 col-md-3">
-          <div class="card h-10 w-90">
-            <img src="{{ product.0.image.url }}" class="card-img-top" alt="product image">
-            <div class="card-body">
-              <h5 class="card-title">{{product.0.product_name}}</h5>
-              <p class="card-text">{{product.0.desc}}</p>
-              <button id="pr{{ product.0.id }}" class="btn btn-primary cart">Add To Cart</button>
-            </div>
-          </div>
-        </div>
-
-
-        {% for i in product|slice:"1:" %}
-        <div class="col-xs-3 col col-sm-3 col-md-3">
-          <div class="card h-100 w-90">
-            <img src='{{ i.image.url }}' class="card-img-top" alt="{% static 'shop/ecom1.jpg' %}">
-            <div class="card-body">
-              <h5 class="card-title">{{i.product_name|truncatewords:12}}</h5>
-              <p class="card-text">{{i.desc|truncatewords:12}}</p>
-              <button id="pr{{i.id}}" class="btn btn-primary cart">Add To Cart</button>
-            </div>
-          </div>
-        </div>
-        {% if forloop.counter|divisibleby:3 and forloop.counter > 0 and not forloop.last%}
-      </div>
-      <div class="carousel-item">
-        {% endif %}
+        {% for i in range %}
+        <button type="button" data-bs-target="#demo{{forloop.parentloop.counter}}" data-bs-slide-to="{{i}}"></button>
         {% endfor %}
       </div>
+
+      <div class="carousel-inner no-padding">
+
+        <div class="carousel-item active">
+
+
+          {% for i in product %}
+          <div class="col-xs-3 col col-sm-3 col-md-3">
+            <div class="card h-100 w-90">
+              <img src='{{ i.image.url }}' class="card-img-top" alt="{% static 'shop/ecom1.jpg' %}">
+              <div class="card-body">
+                <h5 class="card-title">{{i.product_name|truncatewords:12}}</h5>
+                <p class="card-text">{{i.desc|truncatewords:12}}</p>
+                <button id="pr{{i.id}}" class="btn btn-primary cart">Add To Cart</button>
+              </div>
+            </div>
+          </div>
+          {% if forloop.counter|divisibleby:4 and forloop.counter > 0 and not forloop.last%}
+        </div>
+        <div class="carousel-item">
+          {% endif %}
+
+          {% endfor %}
+        </div>
+      </div>
+
+
+      <!--  correction: controls Bootstrap 5 -->
+      <button class="carousel-control-prev" type="button" data-bs-target="#demo{{forloop.counter}}"
+        data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+      </button>
+
+      <button class="carousel-control-next" type="button" data-bs-target="#demo{{forloop.counter}}"
+        data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+      </button>
     </div>
-
-
-    <!--  correction: controls Bootstrap 5 -->
-    <button class="carousel-control-prev" type="button" data-bs-target="#demo{{forloop.counter}}" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon"></span>
-    </button>
-
-    <button class="carousel-control-next" type="button" data-bs-target="#demo{{forloop.counter}}" data-bs-slide="next">
-      <span class="carousel-control-next-icon"></span>
-    </button>
   </div>
   {% endfor %}
 </div>
@@ -137,10 +132,11 @@ padding-right: 0;
   }
   else {
     cart = JSON.parse(localStorage.getItem('cart'));
+    document.getElementById('cart').innerHTML = Object.keys(cart).length;
   }
 
   $(document).on("click", ".cart", function () {
-    alert("Button Clicked!");
+    alert('button clicked');
     var idstr = this.id.toString();
 
     if (cart[idstr] != undefined) {
@@ -153,10 +149,20 @@ padding-right: 0;
     localStorage.setItem('cart', JSON.stringify(cart));
 
     console.log(cart);
-    localStorage.setItem('cart' , JSON.stringify(cart))
+    localStorage.setItem('cart', JSON.stringify(cart))
+
+  });
+
+  let popcart = document.getElementById("popcart");
+
+  let popover = new bootstrap.Popover(popcart, {
+    trigger: "hover",
+    placement: "bottom",
+    html: true,
+    content: `<h4>Cart Items: ${Object.keys(cart).length}</h4>`
   });
 </script>
- 
+
 
 
 {% endblock %}
