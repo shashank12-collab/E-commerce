@@ -1,9 +1,73 @@
-{% extends 'shop/base.html'  %}
+{% extends 'shop/base.html' %}
 
-{% block title %} 
-    product
+{% block title %}
+{{product.product_name}}
 {% endblock%}
 
 {% block body%}
- this is my product page
+
+<div class="container my-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="row">
+                <img src='{{ product.image.url }}' width="400" height="700 ">
+            </div>
+            <div class="row">
+                <div class="d-flex gap-2 mt-3">
+                    <button class="btn btn-primary">Buy Now</button>
+                    <button class="btn btn-primary">Add To Cart</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <h2>{{product.product_name}}</h2>
+            <p><b>RS.</b>{{product.price}}</p>
+            <p>{{product.desc}}</p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+<script>
+  if (localStorage.getItem('cart') == null) {
+    var cart = {};
+  }
+  else {
+    cart = JSON.parse(localStorage.getItem('cart'));
+    document.getElementById('cart').innerHTML = Object.keys(cart).length;
+  }
+
+  $(document).on("click", ".cart", function () {
+    alert('button clicked');
+    var idstr = this.id.toString();
+
+    if (cart[idstr] != undefined) {
+      cart[idstr] = cart[idstr] + 1;
+    }
+    else {
+      cart[idstr] = 1;
+    }
+
+    localStorage.setItem('cart', JSON.stringify(cart));
+
+    console.log(cart);
+    localStorage.setItem('cart', JSON.stringify(cart))
+
+  });
+
+  let popcart = document.getElementById("popcart");
+
+  let popover = new bootstrap.Popover(popcart, {
+    trigger: "hover",
+    placement: "bottom",
+    html: true,
+    content: `<h4>Cart Items: ${Object.keys(cart).length}</h4>`
+  });
+</script>
+
+
+
 {% endblock %}

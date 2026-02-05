@@ -4,7 +4,7 @@ from django.db import models
 
 class Product(models.Model):
     product_name = models.CharField(max_length=20)
-    desc = models.CharField(max_length=200)
+    desc = models.CharField(max_length=1000)
     pub_date = models.DateField()
     category = models.CharField(max_length=50, default="")
     sub_category = models.CharField(max_length=50 , default="")
