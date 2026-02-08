@@ -44,10 +44,36 @@ z-index: 9999;
 }
 
 
+.carousel {
+position: relative;
+}
+
+/* arrows ko overlay se bahar nikalo */
 .carousel-control-prev,
-.carousel-control-next{
-top: auto;
-bottom:auto;
+.carousel-control-next {
+position: absolute;
+top: 50%;
+transform: translateY(-50%);
+width: 40px;
+height: 40px;
+background: #fff;
+border-radius: 50%;
+opacity: 1;
+box-shadow: 0;
+}
+
+
+.carousel-control-prev {
+}
+
+.carousel-control-next {
+right: -50px;
+}
+
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+filter: invert(1);
 }
 
 body .no-padding {
@@ -93,8 +119,9 @@ padding-right: 0;
               <div class="card-body">
                 <h5 class="card-title">{{i.product_name|truncatewords:12}}</h5>
                 <p class="card-text">{{i.desc|truncatewords:12}}</p>
-                <button id="pr{{i.id}}" class="btn btn-primary cart">Add To Cart</button>
-                <a href="/shop/products/{{i.id}}"><button id="qv{{i.id}}" class="btn btn-primary cart">QuickView</button></a>
+                <span id="divpr{{i.id}}" class="divpr">
+                  <button id="pr{{i.id}}" class="btn btn-primary add-cart">Add To Cart</button></span>
+                <a href="/shop/products/{{i.id}}"><button class="btn btn-primary cart">QuickView</button></a>
               </div>
             </div>
           </div>
@@ -130,29 +157,21 @@ padding-right: 0;
 <script>
   if (localStorage.getItem('cart') == null) {
     var cart = {};
-  }
-  else {
+  } else {
     cart = JSON.parse(localStorage.getItem('cart'));
     document.getElementById('cart').innerHTML = Object.keys(cart).length;
   }
 
-  $(document).on("click", ".cart", function () {
-    alert('button clicked');
-    var idstr = this.id.toString();
+  $(document).on("click", ".add-cart", function () {
+    let idstr = this.id;
 
-    if (cart[idstr] != undefined) {
-      cart[idstr] = cart[idstr] + 1;
-    }
-    else {
-      cart[idstr] = 1;
-    }
+    cart[idstr] = (cart[idstr] || 0) + 1;
 
-    localStorage.setItem('cart', JSON.stringify(cart));
-
-    console.log(cart);
-    localStorage.setItem('cart', JSON.stringify(cart))
+    updatecart(cart);
 
   });
+
+
 
   let popcart = document.getElementById("popcart");
 
@@ -161,6 +180,32 @@ padding-right: 0;
     placement: "bottom",
     html: true,
     content: `<h4>Cart Items: ${Object.keys(cart).length}</h4>`
+  });
+
+  function updatecart(cart) {
+    for (let item in cart) {
+      document.getElementById('div' + item).innerHTML =
+        "<button id='minus" + item + "' class='btn btn-primary minus'>-</button> " +
+        "<span id='val" + item + "'> " + cart[item] + " </span> " +
+        "<button id='plus" + item + "' class='btn btn-primary plus'>+</button>";
+    }
+    localStorage.setItem('cart', JSON.stringify(cart));
+    document.getElementById('cart').innerHTML = Object.keys(cart).length;
+  }
+
+  $('.divpr').on("click", "button.minus", function () {
+    a = this.id.slice(7);
+    cart['pr' + a] = cart['pr' + a] - 1;
+    cart['pr' + a] = Math.max(0, cart['pr' + a]);
+    document.getElementById('valpr' + a).innerHTML = cart['pr' + a];
+    updatecart(cart);
+  });
+
+  $('.divpr').on("click", "button.plus", function () {
+    a = this.id.slice(6,);
+    cart['pr' + a] = cart['pr' + a] + 1;
+    document.getElementById('valpr' + a).innerHTML = cart['pr' + a];
+    updatecart();
   });
 </script>
 

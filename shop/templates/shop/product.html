@@ -7,24 +7,25 @@
 {% block body%}
 
 <div class="container my-4">
-    <div class="row">
-        <div class="col-md-4">
-            <div class="row">
-                <img src='{{ product.image.url }}' width="400" height="700 ">
-            </div>
-            <div class="row">
-                <div class="d-flex gap-2 mt-3">
-                    <button class="btn btn-primary">Buy Now</button>
-                    <button class="btn btn-primary">Add To Cart</button>
-                </div>
-            </div>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="row">
+        <img src='{{ product.image.url }}' width="400" height="700 ">
+      </div>
+      <div class="row">
+        <div class="d-flex gap-2 mt-3">
+          <span id="divpr{{product.id}}" class="divpr">
+            <button id="pr{{product.id}}" class="btn btn-primary add-cart">Add To Cart</button></span>
+          <a href="/shop/products/{{i.id}}"><button class="btn btn-primary cart">QuickView</button></a>
         </div>
-        <div class="col-md-8">
-            <h2>{{product.product_name}}</h2>
-            <p><b>RS.</b>{{product.price}}</p>
-            <p>{{product.desc}}</p>
-        </div>
+      </div>
     </div>
+    <div class="col-md-8">
+      <h2>{{product.product_name}}</h2>
+      <p><b>RS.</b>{{product.price}}</p>
+      <p>{{product.desc}}</p>
+    </div>
+  </div>
 </div>
 
 {% endblock %}
@@ -40,7 +41,7 @@
     document.getElementById('cart').innerHTML = Object.keys(cart).length;
   }
 
-  $(document).on("click", ".cart", function () {
+  $(document).on("click", ".add-cart", function () {
     alert('button clicked');
     var idstr = this.id.toString();
 
@@ -50,10 +51,8 @@
     else {
       cart[idstr] = 1;
     }
-
+    updatecart(cart);
     localStorage.setItem('cart', JSON.stringify(cart));
-
-    console.log(cart);
     localStorage.setItem('cart', JSON.stringify(cart))
 
   });
@@ -65,6 +64,30 @@
     placement: "bottom",
     html: true,
     content: `<h4>Cart Items: ${Object.keys(cart).length}</h4>`
+  });
+
+
+  function updatecart(cart) {
+    for (let item in cart) {
+      document.getElementById('div' + item).innerHTML =
+        "<button id='minus" + item + "' class='btn btn-primary minus'>-</button> " +
+        "<span id='val" + item + "'> " + cart[item] + " </span> " +
+        "<button id='plus" + item + "' class='btn btn-primary plus'>+</button>";
+    }
+  }
+
+  $('.divpr').on("click", "button.minus", function () {
+    this.id.replace('minuspr', '')
+    cart['pr' + a] = cart['pr' + a] - 1;
+    document.getElementById('valpr' + a).innerHTML = cart['pr' + a];
+    updatecart();
+  });
+
+  $('.divpr').on("click", "button.plus", function () {
+    this.id.replace('pluspr', '')
+    cart['pr' + a] = cart['pr' + a] + 1;
+    document.getElementById('valpr' + a).innerHTML = cart['pr' + a];
+    updatecart();
   });
 </script>
 

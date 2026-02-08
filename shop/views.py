@@ -48,3 +48,6 @@ def checkout(request):
 
 def home(request):
     return render(request , 'shop/index.html')
+
+
+
