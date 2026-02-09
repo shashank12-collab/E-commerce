@@ -1,3 +1,5 @@
+<!-- I HAVE TO CREATE THE MY CART PAGE  -->
+
 {% extends 'shop/base.html' %}
 {% load static %}
 
@@ -117,7 +119,7 @@ padding-right: 0;
             <div class="card h-100 w-90">
               <img src='{{ i.image.url }}' class="card-img-top" alt="{% static 'shop/ecom1.jpg' %}">
               <div class="card-body">
-                <h5 class="card-title">{{i.product_name|truncatewords:12}}</h5>
+                <h5 class="card-title" id="namepr{{i.id}}">{{i.product_name|truncatewords:12}}</h5>
                 <p class="card-text">{{i.desc|truncatewords:12}}</p>
                 <span id="divpr{{i.id}}" class="divpr">
                   <button id="pr{{i.id}}" class="btn btn-primary add-cart">Add To Cart</button></span>
@@ -155,60 +157,111 @@ padding-right: 0;
 {% block js %}
 
 <script>
-  if (localStorage.getItem('cart') == null) {
-    var cart = {};
-  } else {
-    cart = JSON.parse(localStorage.getItem('cart'));
-    document.getElementById('cart').innerHTML = Object.keys(cart).length;
+  let cart = {};
+
+  try {
+    let storedCart = localStorage.getItem("cart");
+    if (storedCart) {
+      cart = JSON.parse(storedCart);
+    }
+  } catch (e) {
+    cart = {};
+    localStorage.setItem("cart", JSON.stringify(cart));
   }
 
+  document.getElementById("cart").innerHTML = Object.keys(cart).length;
+
+
   $(document).on("click", ".add-cart", function () {
-    let idstr = this.id;
+    let id = this.id;
 
-    cart[idstr] = (cart[idstr] || 0) + 1;
+    if (cart[id] == undefined) {
+      cart[id] = 1;
+    } else {
+      cart[id] += 1;
+    }
 
-    updatecart(cart);
-
+    updateCart(cart);
   });
 
 
+  function updateCart(cart) {
+    for (let item in cart) {
+      let div = document.getElementById("div" + item);
+      if (!div) continue;
+
+      div.innerHTML =
+        `<button id="minus${item}" class="btn btn-primary minus">-</button>
+         <span id="val${item}"> ${cart[item]} </span>
+         <button id="plus${item}" class="btn btn-primary plus">+</button>`;
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    document.getElementById("cart").innerHTML = Object.keys(cart).length;
+
+    updatePopover(cart);
+  }
+
+  $(document).on("click", ".plus", function () {
+    let id = this.id.replace("plus", "");
+    cart[id] += 1;
+    updateCart(cart);
+  });
+
+  $(document).on("click", ".minus", function () {
+    let id = this.id.replace("minus", "");
+    cart[id] -= 1;
+
+    if (cart[id] <= 0) {
+      delete cart[id];
+      document.getElementById("div" + id).innerHTML =
+        `<button id="${id}" class="btn btn-primary add-cart">Add To Cart</button>`;
+    }
+
+    updateCart(cart);
+  });
 
   let popcart = document.getElementById("popcart");
 
-  let popover = new bootstrap.Popover(popcart, {
-    trigger: "hover",
-    placement: "bottom",
-    html: true,
-    content: `<h4>Cart Items: ${Object.keys(cart).length}</h4>`
-  });
+  function updatePopover(cart) {
+    let popStr = "<h5>These are the items in your cart</h5>";
+    let i = 1;
 
-  function updatecart(cart) {
     for (let item in cart) {
-      document.getElementById('div' + item).innerHTML =
-        "<button id='minus" + item + "' class='btn btn-primary minus'>-</button> " +
-        "<span id='val" + item + "'> " + cart[item] + " </span> " +
-        "<button id='plus" + item + "' class='btn btn-primary plus'>+</button>";
+      let nameElem = document.getElementById("name" + item);
+      if (!nameElem) continue;
+
+      popStr += `<b>${i}</b>. ${nameElem.innerHTML} | Qty: ${cart[item]}<br>`;
+      i++;
     }
-    localStorage.setItem('cart', JSON.stringify(cart));
-    document.getElementById('cart').innerHTML = Object.keys(cart).length;
+    popStr += `
+    <hr>
+    <a href="/shop/checkout" class="btn btn-primary btn-sm me-2">Checkout</a>
+     <a href="javascript:void(0)" onclick='clearcart()' id="clearCart" class="btn btn-danger btn-sm">Clear Cart</a>
+  `;
+    popcart.setAttribute("data-bs-content", popStr);
+
+    let popover = new bootstrap.Popover(popcart, {
+      html: true,
+      trigger: "click",
+      placement: "bottom"
+    });
+
+    popover.show();
   }
 
-  $('.divpr').on("click", "button.minus", function () {
-    a = this.id.slice(7);
-    cart['pr' + a] = cart['pr' + a] - 1;
-    cart['pr' + a] = Math.max(0, cart['pr' + a]);
-    document.getElementById('valpr' + a).innerHTML = cart['pr' + a];
-    updatecart(cart);
-  });
+  updatePopover(cart);
 
-  $('.divpr').on("click", "button.plus", function () {
-    a = this.id.slice(6,);
-    cart['pr' + a] = cart['pr' + a] + 1;
-    document.getElementById('valpr' + a).innerHTML = cart['pr' + a];
-    updatecart();
-  });
+  function clearcart(cart) {
+    cart = JSON.parse(localStorage.getItem('cart'));
+    for (let item in cart) {
+      document.getElementById('div' + item).innerHTML = '<button id="' + item + '" class="btn btn-primary add-cart">Add To Cart</button>'
+    }
+    localStorage.clear();
+    cart = {};
+    updateCart(cart);
+  }
 </script>
-
 
 
 {% endblock %}
