@@ -156,7 +156,7 @@ padding-right: 0;
 
 {% block js %}
 
-<script>
+<script> 
   let cart = {};
 
   try {
@@ -176,9 +176,11 @@ padding-right: 0;
     let id = this.id;
 
     if (cart[id] == undefined) {
-      cart[id] = 1;
+      qty = 1;
+      name = document.getElementById('name' + id).innerHTML;
+      cart[id] = [qty, name];
     } else {
-      cart[id] += 1;
+      qty = cart[id][0] += 1;
     }
 
     updateCart(cart);
@@ -192,7 +194,7 @@ padding-right: 0;
 
       div.innerHTML =
         `<button id="minus${item}" class="btn btn-primary minus">-</button>
-         <span id="val${item}"> ${cart[item]} </span>
+         <span id="val${item}"> ${cart[item][0]} </span>
          <button id="plus${item}" class="btn btn-primary plus">+</button>`;
     }
 
@@ -204,22 +206,26 @@ padding-right: 0;
 
   $(document).on("click", ".plus", function () {
     let id = this.id.replace("plus", "");
-    cart[id] += 1;
+    cart[id][0] += 1;
     updateCart(cart);
   });
 
-  $(document).on("click", ".minus", function () {
-    let id = this.id.replace("minus", "");
-    cart[id] -= 1;
+ $(document).on("click", ".minus", function () {
 
-    if (cart[id] <= 0) {
-      delete cart[id];
-      document.getElementById("div" + id).innerHTML =
-        `<button id="${id}" class="btn btn-primary add-cart">Add To Cart</button>`;
+    let id = this.id.replace("minus", "");
+
+    cart[id][0] -= 1;
+
+    if (cart[id][0] <= 0) {
+
+        delete cart[id];  
+
+        document.getElementById("div" + id).innerHTML =
+            `<button id="${id}" class="btn btn-primary add-cart">Add To Cart</button>`;
     }
 
     updateCart(cart);
-  });
+});
 
   let popcart = document.getElementById("popcart");
 
@@ -231,7 +237,7 @@ padding-right: 0;
       let nameElem = document.getElementById("name" + item);
       if (!nameElem) continue;
 
-      popStr += `<b>${i}</b>. ${nameElem.innerHTML} | Qty: ${cart[item]}<br>`;
+      popStr += `<b>${i}</b>. ${nameElem.innerHTML} | Qty: ${cart[item][0]}<br>`;
       i++;
     }
     popStr += `
@@ -252,14 +258,12 @@ padding-right: 0;
 
   updatePopover(cart);
 
-  function clearcart(cart) {
-    cart = JSON.parse(localStorage.getItem('cart'));
-    for (let item in cart) {
-      document.getElementById('div' + item).innerHTML = '<button id="' + item + '" class="btn btn-primary add-cart">Add To Cart</button>'
-    }
-    localStorage.clear();
+  function clearcart() {
     cart = {};
-    updateCart(cart);
+    localStorage.removeItem('cart');
+    document.getElementById("cart").innerHTML = 0;
+
+    updatePopover(cart);
   }
 </script>
 
