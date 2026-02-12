@@ -45,8 +45,10 @@ def productview(request , id):
     return render(request ,'shop/product.html' , {'product' : product[0]})
 
 def checkout(request):
+    thank = False
+    id = None
     if request.method == "POST":
-        print(request.POST)  # debug
+        print(request.POST) 
 
         items = request.POST.get('items_json', "")
         name = request.POST.get('name', "")
@@ -68,8 +70,9 @@ def checkout(request):
             zip_code=zip_code
         )
         order.save()
-
-    return render(request, 'shop/checkout.html')
+        thank = True
+        id = order.order_id
+    return render(request, 'shop/checkout.html' , {'thank':thank , 'id':id})
 
 def home(request):
     return render(request , 'shop/index.html')

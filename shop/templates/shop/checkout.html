@@ -37,7 +37,8 @@ Checkout - My Awesome Cart
             </div>
             <div class="col-12">
                 <label for="inputAddress2" class="form-label">Address line 2</label>
-                <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor" name="address2">
+                <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor"
+                    name="address2">
             </div>
             <div class="col-md-6">
                 <label for="inputCity" class="form-label">City</label>
@@ -88,6 +89,16 @@ Checkout - My Awesome Cart
     }
 
     document.getElementById('cart').innerHTML = sum;
+    $('#itemsJson').val(JSON.stringify(cart));
+
+    let thank = "{{ thank|default:'False' }}";
+
+    if (thank === "True") {
+        alert("Thanks for ordering and your order id is {{id}} use this to track your order");
+        document.location = "/shop";
+        localStorage.removeItem('cart');
+    }
+
 </script>
 
 {% endblock %}
