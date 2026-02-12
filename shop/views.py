@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-from shop.models import Product , Contact
+from shop.models import Product , Contact 
+from shop.models import Orders
 from math import ceil
 
 # Create your views here.
@@ -44,7 +45,31 @@ def productview(request , id):
     return render(request ,'shop/product.html' , {'product' : product[0]})
 
 def checkout(request):
-    return render(request , 'shop/checkout.html')
+    if request.method == "POST":
+        print(request.POST)  # debug
+
+        items = request.POST.get('items_json', "")
+        name = request.POST.get('name', "")
+        email = request.POST.get('email', "")
+        phone_number = request.POST.get('phone_number', "")
+        address = request.POST.get('address1', "") + " " + request.POST.get('address2', "")
+        state = request.POST.get('state', "")
+        city = request.POST.get('city', "")
+        zip_code = request.POST.get('zip_code', "")
+
+        order = Orders(
+            items_json=items,
+            name=name,
+            Email=email,
+            phone_number=phone_number,
+            address=address,
+            State=state,
+            city=city,
+            zip_code=zip_code
+        )
+        order.save()
+
+    return render(request, 'shop/checkout.html')
 
 def home(request):
     return render(request , 'shop/index.html')

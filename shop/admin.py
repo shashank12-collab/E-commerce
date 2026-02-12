@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import Product
-from .models import Contact
+from .models import Contact 
+from .models import Orders
 
 # Register your models here.
 class show(admin.ModelAdmin):
@@ -8,3 +9,7 @@ class show(admin.ModelAdmin):
 
 admin.site.register(Product , show)
 admin.site.register(Contact)
+
+class seen(admin.ModelAdmin):
+    list_display = ('order_id' , 'name' , 'State')
+admin.site.register(Orders , seen)
