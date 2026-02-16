@@ -1,9 +1,79 @@
-{% extends 'shop/base.html'  %}
+{% extends 'shop/base.html' %}
 
-{% block title %} 
-    tracker
+{% block title %}
+Checkout - My Awesome Cart
 {% endblock%}
 
 {% block body%}
- this is my tracker page
+
+<div class="container">
+    <div class="col my-2">
+        <h2>My Awesome Cart Tracker - Enter Your Order_id And Email</h2>
+        <div class="my-4">  
+            <ol class="list-group list-group-numbered" id="items">
+            </ol>
+        </div>
+    </div>
+
+    <div class="col my-4">
+        <h2>step 2 - Enter address and other detail</h2>
+        <form class="row g-3" method="post" action="/shop/checkout/"> {% csrf_token %}
+            <input type="hidden" name="items_json" id="itemsJson">
+            <div class="col-md-6">
+                <label for="inputname" class="form-label">Order_id</label>
+                <input type="name" class="form-control" id="inputname" name="name">
+            </div>
+            <div class="col-md-6">
+                <label for="inputEmail4" class="form-label">Email</label>
+                <input type="email" class="form-control" id="inputEmail4" name="email">
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Track Order</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+<script>
+
+    let cart = {};
+
+    if (localStorage.getItem('cart') != null) {
+        cart = JSON.parse(localStorage.getItem('cart'));
+    }
+
+    console.log(cart);
+    let sum = 0;
+
+    for (item in cart) {
+        let name = cart[item][1];
+        let qty = cart[item][0];
+        sum = sum + qty;
+        mystr = ` <li class="list-group-item d-flex justify-content-between align-items-start">
+                    <div class="ms-2 me-auto">
+                        <div class="fw-bold">${name}</div>
+                    </div>
+                    <span class="badge text-bg-primary rounded-pill">${qty}</span>
+                </li> `
+
+        $('#items').append(mystr);
+    }
+
+    document.getElementById('cart').innerHTML = sum;
+    $('#itemsJson').val(JSON.stringify(cart));
+
+    let thank = "{{ thank|default:'False' }}";
+
+    if (thank === "True") {
+        alert("Thanks for ordering and your order id is {{id}} use this to track your order");
+        document.location = "/shop";
+        localStorage.removeItem('cart');
+    }
+
+</script>
+
 {% endblock %}

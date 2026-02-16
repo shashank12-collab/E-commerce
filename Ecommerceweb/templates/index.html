@@ -1,4 +1,3 @@
-{% extends 'shop/base.html' %}
 <!doctype html>
 <html lang="eg">
   <head>
@@ -12,7 +11,15 @@
     <title>Home page</title>
   </head>
   <body>
-    <h1>Hello World!</h1>
+    <div class="jumbotron text-center">
+  <h1 class="display-4">My Awesome Cart</h1>
+  <p class="lead">This is simply a page from where you can directly <br> go to the shopping page and blog page</p>
+  <hr class="my-4">
+  <p>It uses utility classes for spacing and typography.</p>
+  <a class="btn btn-primary btn-lg" href="/blog">BLOG</a>
+  <a class="btn btn-primary btn-lg" href="/shop">SHOP</a>
+</div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
   </body>
 </html>

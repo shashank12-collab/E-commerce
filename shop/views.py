@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-from shop.models import Product , Contact 
+from shop.models import Product , Contact , Orders , OrderUpdate
 from shop.models import Orders
 from math import ceil
 
@@ -70,6 +70,8 @@ def checkout(request):
             zip_code=zip_code
         )
         order.save()
+        update = OrderUpdate(order_id = order.order_id , update_desc = "The order has been placed")
+        update.save()
         thank = True
         id = order.order_id
     return render(request, 'shop/checkout.html' , {'thank':thank , 'id':id})
