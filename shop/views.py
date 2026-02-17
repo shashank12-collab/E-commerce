@@ -1,3 +1,4 @@
+import json
 from django.http import HttpResponse
 from django.shortcuts import render
 from shop.models import Product , Contact , Orders , OrderUpdate
@@ -33,7 +34,30 @@ def contact(request):
     return render(request ,"shop/contact.html")
 
 def tracker(request):
-    return render(request , 'shop/tracker.html')
+    if request.method == 'POST':
+        orderId = request.POST.get('orderId', '')
+        email = request.POST.get('email', '')
+
+        orders = Orders.objects.filter(order_id=orderId, Email=email)
+
+        if orders.exists():
+            updates_qs = OrderUpdate.objects.filter(order_id=orderId)
+
+            updates = []
+            for item in updates_qs:
+                updates.append({
+                    'text': item.update_desc,
+                    'time': str(item.timestamp)
+                })
+
+            response = json.dumps(updates)
+            return HttpResponse(response, content_type='application/json')
+
+        else:
+            return HttpResponse(json.dumps([]), content_type='application/json')
+
+    return render(request, 'shop/tracker.html')
+    
 
 def search(request):
     return render(request , 'shop/search.html')
