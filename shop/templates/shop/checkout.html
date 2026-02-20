@@ -12,6 +12,13 @@ Checkout - My Awesome Cart
         <div class="my-4">
             <ol class="list-group list-group-numbered" id="items">
             </ol>
+            <div class="card mt-3">
+                <div class="card-body d-flex justify-content-between">
+                    <h5 class="mb-0">Cart Total</h5>
+                    <h5 class="mb-0">₹ <span id="totalprice"></span></h5>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -73,15 +80,19 @@ Checkout - My Awesome Cart
 
     console.log(cart);
     let sum = 0;
+    let price = 0;
 
     for (item in cart) {
         let name = cart[item][1];
         let qty = cart[item][0];
+        let itemPrice = parseInt(cart[item][2].replace(/[^0-9]/g, ""));
         sum = sum + qty;
+        price = price + qty * itemPrice
         mystr = ` <li class="list-group-item d-flex justify-content-between align-items-start">
                     <div class="ms-2 me-auto">
                         <div class="fw-bold">${name}</div>
                     </div>
+                    <span class="badge text-bg-primary rounded-pill">${price}</span>
                     <span class="badge text-bg-primary rounded-pill">${qty}</span>
                 </li> `
 
@@ -89,6 +100,7 @@ Checkout - My Awesome Cart
     }
 
     document.getElementById('cart').innerHTML = sum;
+    document.getElementById('totalprice').innerHTML = price;
     $('#itemsJson').val(JSON.stringify(cart));
 
     let thank = "{{ thank|default:'False' }}";

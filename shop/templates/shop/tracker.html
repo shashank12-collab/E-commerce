@@ -39,8 +39,7 @@ Checkout - My Awesome Cart
 {% block js %}
 
 <script>
-$('#trackerform').submit(function(event)
-{
+    $('#trackerform').submit(function(event) {
     event.preventDefault();
     $('#items').empty();
 
@@ -51,15 +50,45 @@ $('#trackerform').submit(function(event)
     };
 
     $.ajax({
-        type:'POST',
-        url:'/shop/tracker/',
+        type: 'POST',
+        url: '/shop/tracker/',
         data: formdata,
-        encode:true
     })
-    .done(function(data){
-        console.log(data);
+    .done(function(data) {
+
+        let updates = data;   // Django already JSON return kar raha hai
+
+        if (updates.length > 0) {
+
+            for (let i = 0; i < updates.length; i++) {
+
+                let text = updates[i]['text'];
+                let time = updates[i]['time'];
+
+                let mystr = `
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                    <div class="ms-2 me-auto">
+                        <div class="fw-bold">${text}</div>
+                    </div>
+                    <span class="badge text-bg-primary rounded-pill">${time}</span>
+                </li>`;
+
+                $('#items').append(mystr);
+            }
+
+        } else {
+
+            let mystr = `
+            <li class="list-group-item">
+                No updates found
+            </li>`;
+
+            $('#items').append(mystr);
+        }
+
     });
 });
+
 </script>
 
 {% endblock %}

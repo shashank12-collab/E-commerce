@@ -49,7 +49,7 @@ def tracker(request):
                     'text': item.update_desc,
                     'time': str(item.timestamp)
                 })
-
+        
             response = json.dumps(updates)
             return HttpResponse(response, content_type='application/json')
 
