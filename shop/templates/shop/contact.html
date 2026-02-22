@@ -34,12 +34,13 @@ contact us
 {% endblock %}
 
 {% block js %}
+
+{% if thank %}
 <script>
-    mybtn = document.getElementById('btn');
-    const alerted = (event) => {
-        alert('Your application is submitted');
-    };
-    mybtn.addEventListener('click', alerted);
+alert('Thanks for contacting us. we will get back to you soon!');
+
+document.location = "/shop/contact";
+{% endif %}
 </script>
 
 {% endblock %}
