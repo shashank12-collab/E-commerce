@@ -85,15 +85,15 @@ Checkout - My Awesome Cart
     for (item in cart) {
         let name = cart[item][1];
         let qty = cart[item][0];
-        let itemPrice = parseInt(cart[item][2].replace(/[^0-9]/g, ""));
+        let itemPrice = cart[item][2];
         sum = sum + qty;
         price = price + qty * itemPrice
         mystr = ` <li class="list-group-item d-flex justify-content-between align-items-start">
                     <div class="ms-2 me-auto">
                         <div class="fw-bold">${name}</div>
                     </div>
-                    <span class="badge text-bg-primary rounded-pill">${price}</span>
-                    <span class="badge text-bg-primary rounded-pill">${qty}</span>
+        <span class="badge text-bg-primary rounded-pill">₹ ${itemPrice * qty}</span>
+        <span class="badge text-bg-secondary rounded-pill">Qty: ${qty}</span>
                 </li> `
 
         $('#items').append(mystr);

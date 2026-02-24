@@ -214,11 +214,11 @@ overflow: visible !important;
 
   $(document).on("click", ".add-cart", function () {
     let id = this.id;
+    name = document.getElementById('name' + id).innerHTML;
+    price = document.querySelector('#price' + id + ' span').innerText;
 
     if (cart[id] == undefined) {
       qty = 1;
-      name = document.getElementById('name' + id).innerHTML;
-      price = document.getElementById('price' + id).innerHTML;
       cart[id] = [qty, name , parseInt(price)];
     } else {
       qty = cart[id][0] += 1;
