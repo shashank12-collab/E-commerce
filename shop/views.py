@@ -3,7 +3,10 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from shop.models import Product , Contact , Orders , OrderUpdate
 from shop.models import Orders
+from django.views.decorators.csrf import csrf_exempt
 from math import ceil
+from .paytm import checksum
+MERCHANK_KEY = 'kbzk1DSJiv_03p5';
 
 # Create your views here.
 
@@ -77,8 +80,12 @@ def checkout(request):
         print(request.POST) 
 
         items = request.POST.get('items_json', "")
-        name = request.POST.get('name', "")
         email = request.POST.get('email', "")
+        name = request.POST.get('name', "")
+        amount = request.POST.get('amount')
+        if amount == "":
+         amount = 0
+        amount = int(amount)
         phone_number = request.POST.get('phone_number', "")
         address = request.POST.get('address1', "") + " " + request.POST.get('address2', "")
         state = request.POST.get('state', "")
@@ -93,17 +100,36 @@ def checkout(request):
             address=address,
             State=state,
             city=city,
-            zip_code=zip_code
+            zip_code=zip_code,
+            amount = amount
         )
         order.save()
         update = OrderUpdate(order_id = order.order_id , update_desc = "The order has been placed")
         update.save()
         thank = True
         id = order.order_id
+        parem_dict = {
+            'MID': "Worldp64425807474247",
+            'ORDER_ID' : str(order.order_id),
+            'TXN_AMOUNT':str(amount),
+            'CUST_ID':email,
+            'INDUSTRY_TYPE_ID':'worlspresslg',
+            'WEBSITE':'WEBSTAGING',
+            'CHANNEL_ID' :'ENTER_YOUR_MERCHENT_ID',
+            'CALLBACK_URL' : 'http://127.0.0.1:8000/shop/handlepayment/',
+        }
+        parem_dict['CHECKSUMHASH'] = checksum.generate_checksum(parem_dict , MERCHANK_KEY)
+        return render(request , 'shop/paytm.html' , {'param_dict' : parem_dict})
     return render(request, 'shop/checkout.html' , {'thank':thank , 'id':id})
 
 def home(request):
     return render(request , 'shop/index.html')
+
+@csrf_exempt
+def handlerequest(request):
+    return HttpResponse("done")
+    pass
+    
 
 
 

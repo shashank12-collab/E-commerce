@@ -139,9 +139,9 @@ overflow: visible !important;
                 <h4 class="card-title" id="namepr{{i.id}}">
                   {{ i.product_name|truncatewords:12 }}
                 </h4>
-                
+
                 <h5 class="card-price" id="pricepr{{i.id}}">
-                 Rs. <span>{{ i.price|truncatewords:12 }}</span>
+                  Rs. <span>{{ i.price }}</span>
                 </h5>
 
                 <p class="card-text">
@@ -213,13 +213,16 @@ overflow: visible !important;
 
 
   $(document).on("click", ".add-cart", function () {
-    let id = this.id;
-    name = document.getElementById('name' + id).innerHTML;
-    price = document.querySelector('#price' + id + ' span').innerText;
+
+    let id = this.id;       // pr1
+    let prodId = id.replace("pr", "");   // 1
+
+    name = document.getElementById('namepr' + prodId).innerHTML;
+    price = document.querySelector('#pricepr' + prodId + ' span').innerText;
 
     if (cart[id] == undefined) {
       qty = 1;
-      cart[id] = [qty, name , parseInt(price)];
+      cart[id] = [qty, name, parseInt(price)];
     } else {
       qty = cart[id][0] += 1;
     }
@@ -270,32 +273,33 @@ overflow: visible !important;
 
   let popcart = document.getElementById("popcart");
 
-  function updatePopover(cart) {
-    let popStr = "<h5>These are the items in your cart</h5>";
-    let i = 1;
+function updatePopover(cart) {
+  let popStr = "<h5>These are the items in your cart</h5>";
+  let i = 1;
 
-    for (let item in cart) {
-      let nameElem = document.getElementById("name" + item);
-      if (!nameElem) continue;
+  for (let item in cart) {
+    let qty = cart[item][0];
+    let name = cart[item][1];
+    let price = cart[item][2];
 
-      popStr += `<b>${i}</b>. <b>${cart[item][2]}</b> ${nameElem.innerHTML} | Qty: ${cart[item][0]}<br>`;
-      i++;
-    }
-    popStr += `
+    popStr += `<b>${i}</b>. Rs. ${price} ${name} | Qty: ${qty}<br>`;
+    i++;
+  }
+
+  popStr += `
     <hr>
     <a href="/shop/checkout" class="btn btn-primary btn-sm me-2">Checkout</a>
-     <a href="javascript:void(0)" onclick='clearcart()' id="clearCart" class="btn btn-danger btn-sm">Clear Cart</a>
+    <a href="javascript:void(0)" onclick="clearcart()" class="btn btn-danger btn-sm">Clear Cart</a>
   `;
-    popcart.setAttribute("data-bs-content", popStr);
 
-    let popover = new bootstrap.Popover(popcart, {
-      html: true,
-      trigger: "click",
-      placement: "bottom"
-    });
+  popcart.setAttribute("data-bs-content", popStr);
 
-    popover.show();
-  }
+  new bootstrap.Popover(popcart, {
+    html: true,
+    trigger: "click",
+    placement: "bottom"
+  });
+}
 
   updatePopover(cart);
 
