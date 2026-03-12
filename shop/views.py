@@ -127,8 +127,19 @@ def home(request):
 
 @csrf_exempt
 def handlerequest(request):
-    return HttpResponse("done")
-    pass
+    from = request.POST
+    response_dict = {}
+    for i in form.keys():
+        if i == 'CHECKSUMHASH':
+            checksum = form[i]
+            
+    verify = checksum.verify_checksum(response_dict , MERCHANK_KEY , checksum) 
+    if verify:
+        if response_dict['RESPONSE'] == '01':
+            print('order successful')
+        else:
+            print('order was not successful because' + response_dict['RESPMSG'])
+    return render(request , 'shop/paymentstatus.html' , {'response' : response_dict})  
     
 
 
