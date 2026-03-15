@@ -139,6 +139,7 @@ def handlerequest(request):
             print('order successful')
         else:
             print('order was not successful because' + response_dict['RESPMSG'])
+            print('hii')
     return render(request , 'shop/paymentstatus.html' , {'response' : response_dict})  
     
 
